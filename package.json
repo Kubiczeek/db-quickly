@@ -1,0 +1,28 @@
+{
+  "name": "db-quickly-js",
+  "version": "0.0.1",
+  "description": "Want to have some quickly accessible database for javascript? This is it!",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "url": "https://github.com/Kubiczeek/Database-quickly"
+  },
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "lint": "pnpm eslint ./src --ext .ts"
+  },
+  "author": "kubiczeek",
+  "license": "OSL",
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@types/node": "^20.11.5",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  }
+}
