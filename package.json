@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Want to have some quickly accessible database for javascript? This is it!",
   "main": "dist/index.js",
+  "type": "module",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "repository": {
@@ -11,7 +12,9 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsup src/index.ts --format cjs,esm --dts",
-    "lint": "pnpm eslint ./src --ext .ts"
+    "lint": "pnpm eslint ./src --ext .ts",
+    "test": "vitest",
+    "ci": "pnpm run lint && pnpm run test && pnpm run build"
   },
   "author": "kubiczeek",
   "license": "OSL",
@@ -23,6 +26,7 @@
     "eslint": "^8.56.0",
     "ts-node": "^10.9.2",
     "tsup": "^8.0.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.1"
   }
 }
