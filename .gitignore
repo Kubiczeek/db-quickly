@@ -95,3 +95,4 @@ typings/
 .env
 
 libs
+db-quickly.json
