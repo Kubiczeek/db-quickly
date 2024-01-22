@@ -1,5 +1,5 @@
 import fs from "fs";
-import { IDatabase } from "./types";
+import { IDatabase } from "./types.js";
 
 export function loadJSON(path: string): IDatabase | null {
   return fs.existsSync(path)
@@ -8,6 +8,9 @@ export function loadJSON(path: string): IDatabase | null {
 }
 
 export function saveJSON(path: string, json: IDatabase): void {
+  if (!fs.existsSync(path.slice(0, -15))) {
+    fs.mkdirSync(path.slice(0, -15));
+  }
   return fs.writeFileSync(path, JSON.stringify(json));
 }
 
