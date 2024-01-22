@@ -1,6 +1,6 @@
-import { loadJSON, saveJSON, generateId } from "./utilities";
-import { ICluster, IDatabase, SchemaTypes, ISchemaItem } from "./types";
-import { CustomError as _Error, ErrorType as _ErrorType } from "./error";
+import { loadJSON, saveJSON, generateId } from "./utilities.js";
+import { ICluster, IDatabase, SchemaTypes, ISchemaItem } from "./types.js";
+import { CustomError as _Error, ErrorType as _ErrorType } from "./error.js";
 
 class Cluster implements ICluster {
   _id: string;
@@ -107,27 +107,20 @@ export class Database implements IDatabase {
   path: string = "./";
   FILE_NAME: string = "db-quickly.json";
   clusters: Array<Cluster>;
-  private constructor(name: string, description: string, path: string) {
+  constructor(
+    name?: string,
+    description?: string,
+    path?: string,
+    override?: boolean
+  ) {
     this.name = name || "default-name";
     this.description = description || "Default description";
     this.path = path || "./";
     this.FILE_NAME = "db-quickly.json";
     this.clusters = [];
-  }
-
-  initializeDatabase({
-    name,
-    description,
-    path,
-    override,
-  }: {
-    name: string;
-    description: string;
-    path: string;
-    override: boolean;
-  }): void {
-    if (!loadJSON(path) || override) {
-      saveJSON(path, new Database(name, description, path));
+    if (!loadJSON(this.path.concat(this.FILE_NAME)) || override) {
+      saveJSON(this.path.concat(this.FILE_NAME), this);
+      return this;
     }
   }
 }

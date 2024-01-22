@@ -1,22 +1,22 @@
 export enum SchemaTypes {
-	String = "string",
-	Number = "number",
-	Boolean = "boolean",
-	Date = "date",
-	Array = "array",
-	Object = "object",
-	ObjectId = "objectId",
-	Mixed = "mixed",
+  String = "string",
+  Number = "number",
+  Boolean = "boolean",
+  Date = "date",
+  Array = "array",
+  Object = "object",
+  ObjectId = "objectId",
+  Mixed = "mixed",
 }
 
 export interface ISchemaItem {
-	name: string;
-	type: SchemaTypes;
-	required: boolean;
+  name: string;
+  type: SchemaTypes;
+  required: boolean;
 }
 
 export interface ICluster {
-	_id: string;
+  _id: string;
   name: string;
   description: string;
   data: Array<unknown>;
@@ -30,15 +30,4 @@ export interface IDatabase {
   path: string;
   FILE_NAME: string;
   clusters: Array<ICluster>;
-  initializeDatabase({
-    name,
-    description,
-    path,
-    override,
-  }: {
-    name: string;
-    description: string;
-    path: string;
-    override: boolean;
-  }): void;
 }
