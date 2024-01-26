@@ -41,11 +41,10 @@ export class Schema {
     return new Schema(name, description, schema);
   }
 
-  newItem(name: string, type: SchemaTypes, required: boolean): ISchemaItem {
-    return { name, type, required };
-  }
-
-  validateData(inputData: object, schema?: Schema): boolean {
+  validateData(
+    inputData: object,
+    schema?: Schema
+  ): { success: boolean; error?: _Error | unknown } {
     const data = schema ? schema.data : this.data;
     const requiredFields: Array<ISchemaItem> = data.filter(
       (item: ISchemaItem) => item.required
@@ -53,44 +52,62 @@ export class Schema {
     const optionalFields: Array<ISchemaItem> = data.filter(
       (item: ISchemaItem) => !item.required
     );
-    for (const requiredItem of requiredFields) {
-      if (!(requiredItem.name in inputData)) {
-        throw new _Error(
-          `Missing required field: ${requiredItem.name}`,
-          _ErrorType.MissingKey
-        );
-      }
-      if (
-        requiredItem.type !==
-        typeof inputData[requiredItem.name as keyof typeof inputData]
-      ) {
-        throw new _Error(
-          `Invalid type for the required field: ${requiredItem.name}`,
-          _ErrorType.InvalidType
-        );
-      }
-      if (!inputData[requiredItem.name as keyof typeof inputData]) {
-        throw new _Error(
-          `Missing value for the required field: ${requiredItem.name}`,
-          _ErrorType.MissingValue
-        );
-      }
-    }
-    for (const optionalItem of optionalFields) {
-      if (optionalItem.name in inputData) {
+    try {
+      for (const requiredItem of requiredFields) {
+        if (!(requiredItem.name in inputData)) {
+          throw new _Error(
+            `Missing required field: ${requiredItem.name}`,
+            _ErrorType.MissingKey
+          );
+        }
         if (
-          optionalItem.type !==
-          typeof inputData[optionalItem.name as keyof typeof inputData]
+          requiredItem.type !==
+          typeof inputData[requiredItem.name as keyof typeof inputData]
         ) {
           throw new _Error(
-            `Invalid type for the optional field: ${optionalItem.name}`,
+            `Invalid type for the required field: ${requiredItem.name}`,
             _ErrorType.InvalidType
           );
         }
+        if (inputData[requiredItem.name as keyof typeof inputData] == null) {
+          throw new _Error(
+            `Missing value for the required field: ${requiredItem.name}`,
+            _ErrorType.MissingValue
+          );
+        }
       }
+      for (const optionalItem of optionalFields) {
+        if (optionalItem.name in inputData) {
+          if (
+            optionalItem.type !==
+            typeof inputData[optionalItem.name as keyof typeof inputData]
+          ) {
+            throw new _Error(
+              `Invalid type for the optional field: ${optionalItem.name}`,
+              _ErrorType.InvalidType
+            );
+          }
+        }
+      }
+    } catch (error) {
+      return { success: false, error };
     }
-    return true;
+    return { success: true };
   }
+}
+
+/**
+ * @param name string
+ * @param type SchemaTypes
+ * @param required
+ * @returns
+ */
+export function newItem(
+  name: string,
+  type: SchemaTypes,
+  required: boolean
+): ISchemaItem {
+  return { name, type, required };
 }
 
 export function createSchema(

@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { Database } from "./index.js";
+import { Database, Schema, newItem } from "./index.js";
+import { SchemaTypes } from "./types.js";
 
 describe("Database", () => {
   // Database can be instantiated with default values
@@ -75,5 +76,26 @@ describe("Database", () => {
     expect(database.path).toBe("./");
     expect(database.FILE_NAME).toBe("db-quickly.json");
     expect(database.clusters).toEqual([]);
+  });
+});
+
+describe("Validation", () => {
+  it("should create schema with test item", () => {
+    const schema = new Schema("test", "test", [
+      newItem("name", SchemaTypes.String, true),
+    ]);
+    expect(schema.name).toBe("test");
+    expect(schema.description).toBe("test");
+    expect(schema.data).toEqual([newItem("name", SchemaTypes.String, true)]);
+  });
+
+  it("should create schema and validate it and test optional and required fields", () => {
+    const schema = new Schema("test", "test", [
+      newItem("name", SchemaTypes.String, true),
+      newItem("good", SchemaTypes.Boolean, false),
+    ]);
+
+    const { success } = schema.validateData({ name: "test" });
+    expect(success).toBe(true);
   });
 });
