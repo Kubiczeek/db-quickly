@@ -2,20 +2,30 @@ import { loadJSON, saveJSON, generateId } from "./utilities.js";
 import { ICluster, IDatabase, SchemaTypes, ISchemaItem } from "./types.js";
 import { CustomError as _Error, ErrorType as _ErrorType } from "./error.js";
 
-class Cluster implements ICluster {
+export class Cluster implements ICluster {
   _id: string;
   name: string;
   description: string;
   data: Array<unknown>;
   constructor(name: string, description: string) {
     this._id = generateId();
-    this.name = name;
-    this.description = description;
+    this.name = name.toString();
+    this.description = description.toString();
     this.data = [];
   }
   createCluster(name: string, description: string): Cluster {
     return new Cluster(name, description);
   }
+
+  /**
+   * Inserts data into the cluster
+   * @param data unknown
+   * @example <caption>Example usage of insertData function.</caption>
+   * ```js
+   * const cluster = new Cluster("test", "test");
+   * cluster.insertData("test");
+   * ```
+   */
   insertData(data: unknown): void {
     this.data.push(data);
   }
@@ -189,15 +199,16 @@ export class Database implements IDatabase {
    * Adds a cluster to the database
    * @param {Cluster} cluster
    * @returns {Cluster}
-   * @example <caption>Example usage of createCluster function.</caption>
+   * @example <caption>Example usage of addCluster function.</caption>
    * ```js
    * const database = new Database();
-   * const cluster = database.createCluster("test", "test");
+   * const cluster = database.addCluster("test", "test");
    * ```
    */
   addCluster(cluster: Cluster): void {
     const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
     db.clusters.push(cluster);
+    this.clusters.push(cluster);
     saveJSON(this.path.concat(this.FILE_NAME), db);
   }
 
@@ -263,6 +274,9 @@ export class Database implements IDatabase {
   deleteClusterById(id: string): Array<Cluster> {
     const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
     db.clusters = db.clusters.filter((cluster: Cluster) => cluster._id !== id);
+    this.clusters = this.clusters.filter(
+      (cluster: Cluster) => cluster._id !== id
+    );
     saveJSON(this.path.concat(this.FILE_NAME), db);
     return db.clusters;
   }
@@ -281,6 +295,9 @@ export class Database implements IDatabase {
   deleteClusterByName(name: string): Array<Cluster> {
     const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
     db.clusters = db.clusters.filter(
+      (cluster: Cluster) => cluster.name !== name
+    );
+    this.clusters = this.clusters.filter(
       (cluster: Cluster) => cluster.name !== name
     );
     saveJSON(this.path.concat(this.FILE_NAME), db);
@@ -308,6 +325,12 @@ export class Database implements IDatabase {
       }
       return item;
     });
+    this.clusters = this.clusters.map((item: Cluster) => {
+      if (item._id === id) {
+        return cluster;
+      }
+      return item;
+    });
     saveJSON(this.path.concat(this.FILE_NAME), db);
     return db.clusters;
   }
@@ -328,6 +351,12 @@ export class Database implements IDatabase {
   updateClusterByName(name: string, cluster: Cluster): Array<Cluster> {
     const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
     db.clusters = db.clusters.map((item: Cluster) => {
+      if (item.name === name) {
+        return cluster;
+      }
+      return item;
+    });
+    this.clusters = this.clusters.map((item: Cluster) => {
       if (item.name === name) {
         return cluster;
       }
