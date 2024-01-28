@@ -1,11 +1,25 @@
 {
   "name": "db-quickly-js",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Want to have some quickly accessible database for javascript? This is it!",
   "main": "dist/index.js",
   "type": "module",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "keywords": [
+    "database",
+    "quickly",
+    "js",
+    "javascript",
+    "db",
+    "quick",
+    "quick-db",
+    "quick-database",
+    "quickly-db",
+    "quickly-database",
+    "database-quickly",
+    "database quickly"
+  ],
   "repository": {
     "url": "https://github.com/Kubiczeek/Database-quickly"
   },

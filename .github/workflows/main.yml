@@ -1,4 +1,4 @@
-name: CI
+name: Checkout the commit and run lint and build
 on:
   push:
     branches:
