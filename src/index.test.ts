@@ -89,7 +89,7 @@ describe("Validation", () => {
     expect(schema.data).toEqual([newItem("name", SchemaTypes.String, true)]);
   });
 
-  it("should create schema and validate it and test optional and required fields", () => {
+  it("create schema and validate it - return success", () => {
     const schema = new Schema("test", "test", [
       newItem("name", SchemaTypes.String, true),
       newItem("good", SchemaTypes.Boolean, false),
@@ -97,5 +97,16 @@ describe("Validation", () => {
 
     const { success } = schema.validateData({ name: "test" });
     expect(success).toBe(true);
+  });
+
+  it("create schema and validate it with error - returns error", () => {
+    const schema = new Schema("test", "test", [
+      newItem("name", SchemaTypes.String, true),
+      newItem("good", SchemaTypes.Boolean, false),
+    ]);
+
+    const { success, error } = schema.validateData({ name: 1 });
+    expect(success).toBe(false);
+    expect(error).toBeInstanceOf(Error);
   });
 });
