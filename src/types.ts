@@ -1,3 +1,8 @@
+/**
+ * Enum for Schema Types
+ * @readonly
+ * @enum {string}
+ */
 export enum SchemaTypes {
   String = "string",
   Number = "number",

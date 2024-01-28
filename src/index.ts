@@ -26,6 +26,24 @@ export class Schema {
   name: string;
   description: string;
   data: Array<ISchemaItem>;
+  /**
+   * Creates an instance of Schema.
+   * @param {string} name
+   * @param {string} description
+   * @param {Array<ISchemaItem>} schema
+   * @example <caption>Example usage of Schema class and validation.</caption>
+   * ```js
+   * const schema = new Schema("test", "test", [
+   * 	newItem("name", SchemaTypes.String, true),
+   * 	newItem("good", SchemaTypes.Boolean, false),
+   * ]);
+   * schema.validateData({ name: "test" }); // returns { success: true }
+   * schema.validateData({ name: 1 }); // returns { success: false, error: Error }
+   * schema.validateData({ name: "test", good: true }); // returns { success: true }
+   * schema.validateData({ name: "test", good: 1 }); // returns { success: false, error: Error }
+   * schema.validateData({ name: "test", good: true, bad: true }); // returns { success: false, error: Error }
+   * ```
+   */
   constructor(name: string, description: string, schema: Array<ISchemaItem>) {
     this._id = generateId();
     this.name = name;
@@ -33,14 +51,23 @@ export class Schema {
     this.data = schema;
   }
 
-  createSchema(
-    name: string,
-    description: string,
-    schema: Array<ISchemaItem>
-  ): Schema {
-    return new Schema(name, description, schema);
-  }
-
+  /**
+   * @param {object} inputData
+   * @param {Schema} [schema=this]
+   * @returns {object} { success: boolean; error?: _Error | unknown }
+   * @example <caption>Example usage of validateData function.</caption>
+   * ```js
+   * const schema = new Schema("test", "test", [
+   * 	newItem("name", SchemaTypes.String, true),
+   * 	newItem("good", SchemaTypes.Boolean, false),
+   * ]);
+   * schema.validateData({ name: "test" }); // returns { success: true }
+   * schema.validateData({ name: 1 }); // returns { success: false, error: Error }
+   * schema.validateData({ name: "test", good: true }); // returns { success: true }
+   * schema.validateData({ name: "test", good: 1 }); // returns { success: false, error: Error }
+   * schema.validateData({ name: "test", good: true, bad: true }); // returns { success: false, error: Error }
+   * ```
+   */
   validateData(
     inputData: object,
     schema?: Schema
@@ -99,8 +126,22 @@ export class Schema {
 /**
  * @param name string
  * @param type SchemaTypes
- * @param required
- * @returns
+ * @param required boolean
+ * @returns ISchemaItem
+ * @example <caption>Example usage of newItem function.</caption>
+ * ```js
+ * const name = "name";
+ * const type = SchemaTypes.String;
+ * const required = true;
+ * const item = newItem(name, type, required);
+ * ```
+ * @example <caption>Usage of newItem function when creating Schema</caption>
+ * ```js
+ * const schema = new Schema("test", "test", [
+ *  newItem("name", SchemaTypes.String, true),
+ * 	newItem("good", SchemaTypes.Boolean, false),
+ * ]);
+ * ```
  */
 export function newItem(
   name: string,
@@ -110,20 +151,23 @@ export function newItem(
   return { name, type, required };
 }
 
-export function createSchema(
-  name: string,
-  description: string,
-  schema: Array<ISchemaItem>
-): Schema {
-  return new Schema(name, description, schema);
-}
-
 export class Database implements IDatabase {
   name: string;
   description: string;
   path: string = "./";
   FILE_NAME: string = "db-quickly.json";
   clusters: Array<Cluster>;
+  /**
+   * Creates an instance of Database.
+   * @param {string} [name="default-name"]
+   * @param {string} [description="Default description"]
+   * @param {string} [path="./"]
+   * @param {boolean} [override=false]
+   * @example <caption>Example usage of Database class.</caption>
+   * ```js
+   * const database = new Database();
+   * ```
+   */
   constructor(
     name?: string,
     description?: string,
@@ -140,27 +184,82 @@ export class Database implements IDatabase {
       return this;
     }
   }
+
+  /**
+   * Adds a cluster to the database
+   * @param {Cluster} cluster
+   * @returns {Cluster}
+   * @example <caption>Example usage of createCluster function.</caption>
+   * ```js
+   * const database = new Database();
+   * const cluster = database.createCluster("test", "test");
+   * ```
+   */
   addCluster(cluster: Cluster): void {
     const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
     db.clusters.push(cluster);
     saveJSON(this.path.concat(this.FILE_NAME), db);
   }
 
+  /**
+   * Finds a cluster by id
+   * @param {string} id
+   * @returns {Cluster | undefined}
+   * @example <caption>Example usage of getClusterById function.</caption>
+   * ```js
+   * const database = new Database();
+   * const cluster = database.createCluster("test", "test");
+   * const foundCluster = database.getClusterById(cluster._id);
+   * ```
+   */
   getClusterById(id: string): Cluster | undefined {
     const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
     return db.clusters.find((cluster: Cluster) => cluster._id === id);
   }
 
+  /**
+   * Finds a cluster by name
+   * @param {string} name
+   * @returns {Cluster | undefined}
+   * @example <caption>Example usage of getClusterByName function.</caption>
+   * ```js
+   * const database = new Database();
+   * const cluster = database.createCluster("test", "test");
+   * const foundCluster = database.getClusterByName(cluster.name);
+   * ```
+   */
   getClusterByName(name: string): Cluster | undefined {
     const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
     return db.clusters.find((cluster: Cluster) => cluster.name === name);
   }
 
+  /**
+   * Gets all clusters
+   * @returns {Array<Cluster>}
+   * @example <caption>Example usage of getAllClusters function.</caption>
+   * ```js
+   * const database = new Database();
+   * const cluster = database.createCluster("test", "test");
+   * const cluster = database.createCluster("test2", "test2");
+   * const allClusters = database.getAllClusters();
+   * ```
+   */
   getAllClusters(): Array<Cluster> {
     const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
     return db.clusters;
   }
 
+  /**
+   * Deletes a cluster by id
+   * @param {string} id
+   * @returns {Array<Cluster>}
+   * @example <caption>Example usage of deleteClusterById function.</caption>
+   * ```js
+   * const database = new Database();
+   * const cluster = database.createCluster("test", "test");
+   * const allClusters = database.deleteClusterById(cluster._id);
+   * ```
+   */
   deleteClusterById(id: string): Array<Cluster> {
     const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
     db.clusters = db.clusters.filter((cluster: Cluster) => cluster._id !== id);
@@ -168,6 +267,17 @@ export class Database implements IDatabase {
     return db.clusters;
   }
 
+  /**
+   * Deletes a cluster by name
+   * @param {string} name
+   * @returns {Array<Cluster>}
+   * @example <caption>Example usage of deleteClusterByName function.</caption>
+   * ```js
+   * const database = new Database();
+   * const cluster = database.createCluster("test", "test");
+   * const allClusters = database.deleteClusterByName("test");
+   * ```
+   */
   deleteClusterByName(name: string): Array<Cluster> {
     const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
     db.clusters = db.clusters.filter(
@@ -177,6 +287,19 @@ export class Database implements IDatabase {
     return db.clusters;
   }
 
+  /**
+   * Updates a cluster by id
+   * @param {string} id
+   * @param {Cluster} cluster
+   * @returns {Array<Cluster>}
+   * @example <caption>Example usage of updateClusterById function.</caption>
+   * ```js
+   * const database = new Database();
+   * const cluster = database.createCluster("test", "test");
+   * cluster.insertData("test");
+   * const updatedCluster = database.updateClusterById(cluster._id, cluster);
+   * ```
+   */
   updateClusterById(id: string, cluster: Cluster): Array<Cluster> {
     const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
     db.clusters = db.clusters.map((item: Cluster) => {
@@ -189,6 +312,19 @@ export class Database implements IDatabase {
     return db.clusters;
   }
 
+  /**
+   * Updates a cluster by name
+   * @param {string} name
+   * @param {Cluster} cluster
+   * @returns {Array<Cluster>}
+   * @example <caption>Example usage of updateClusterByName function.</caption>
+   * ```js
+   * const database = new Database();
+   * const cluster = database.createCluster("test", "test");
+   * cluster.insertData("test");
+   * const updatedCluster = database.updateClusterByName("test", cluster);
+   * ```
+   */
   updateClusterByName(name: string, cluster: Cluster): Array<Cluster> {
     const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
     db.clusters = db.clusters.map((item: Cluster) => {
