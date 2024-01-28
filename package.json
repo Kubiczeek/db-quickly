@@ -1,5 +1,5 @@
 {
-  "name": "db-quickly-js",
+  "name": "db-quickly",
   "version": "1.0.0",
   "description": "Want to have some quickly accessible database for javascript? This is it!",
   "main": "dist/index.js",
