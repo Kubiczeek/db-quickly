@@ -140,4 +140,64 @@ export class Database implements IDatabase {
       return this;
     }
   }
+  addCluster(cluster: Cluster): void {
+    const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
+    db.clusters.push(cluster);
+    saveJSON(this.path.concat(this.FILE_NAME), db);
+  }
+
+  getClusterById(id: string): Cluster | undefined {
+    const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
+    return db.clusters.find((cluster: Cluster) => cluster._id === id);
+  }
+
+  getClusterByName(name: string): Cluster | undefined {
+    const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
+    return db.clusters.find((cluster: Cluster) => cluster.name === name);
+  }
+
+  getAllClusters(): Array<Cluster> {
+    const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
+    return db.clusters;
+  }
+
+  deleteClusterById(id: string): Array<Cluster> {
+    const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
+    db.clusters = db.clusters.filter((cluster: Cluster) => cluster._id !== id);
+    saveJSON(this.path.concat(this.FILE_NAME), db);
+    return db.clusters;
+  }
+
+  deleteClusterByName(name: string): Array<Cluster> {
+    const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
+    db.clusters = db.clusters.filter(
+      (cluster: Cluster) => cluster.name !== name
+    );
+    saveJSON(this.path.concat(this.FILE_NAME), db);
+    return db.clusters;
+  }
+
+  updateClusterById(id: string, cluster: Cluster): Array<Cluster> {
+    const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
+    db.clusters = db.clusters.map((item: Cluster) => {
+      if (item._id === id) {
+        return cluster;
+      }
+      return item;
+    });
+    saveJSON(this.path.concat(this.FILE_NAME), db);
+    return db.clusters;
+  }
+
+  updateClusterByName(name: string, cluster: Cluster): Array<Cluster> {
+    const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
+    db.clusters = db.clusters.map((item: Cluster) => {
+      if (item.name === name) {
+        return cluster;
+      }
+      return item;
+    });
+    saveJSON(this.path.concat(this.FILE_NAME), db);
+    return db.clusters;
+  }
 }
