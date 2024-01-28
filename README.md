@@ -1,48 +1,32 @@
 # Database-quickly
 
-Welcome to my little **side** project! It's simple "json" database. To use it:
+An easy to use **noSQL database** (json database) for javascript and typescript.
 
-1.  Use your favourite package manager to install `db-quickly` 🚀
-2.  Import it using `const Database = require("db-quickly");` 📁
-3.  Have fun! ❤️
+## 🎈 Getting Started
 
-There are plenty of functions to use, make sure to check them out!
+To start using this package, follow these easy steps bellow to get you started!
 
-Example of use:
+### 🛠️ Installation Steps
 
-```js
-const Database = require("db-quickly-js");
+1. Use your favourite package manager to install `db-quickly` 🚀
 
-Database.initializeDatabase(
-  "Great Database",
-  "This database is used to store the greatest data",
-  false
-);
-let cluster1 = Database.createCluster();
-let cluster2 = Database.createCluster(
-  "ClusterName",
-  "Description of this cluster"
-);
-
-Database.addCluster(cluster1);
-Database.addCluster(cluster2);
-
-let allClusters = Database.getAllClusters();
-console.log(allClusters);
-
-cluster1.clusterName = "UpdatedClusterName";
-cluster2.clusterName = "UpdatedClusterNameNumber2";
-
-Database.updateClusterByName("Cluster1", cluster1);
-Database.updateClusterById(cluster2._id, cluster2);
-
-allClusters = Database.getAllClusters();
-console.log(allClusters);
-
-Database.deleteClusterByName("UpdatedClusterName");
-Database.deleteClusterById(cluster2._id);
-
-console.log(Database.getAllClusters());
+```
+pnpm install db-quickly
 ```
 
-If you have any questions, make sure to contact me on **Discord** `kubiczeek`
+2. Thats it! Easy isn't it? Have fun! ❤️
+
+## 📰 Documentation
+
+Here is a list of availible Classes and its functions:
+**Database** - `addCluster` - `getClusterById (ByName)` - `getAllClusters` - `deleteClusterById (ByName)` - `updateClusterById (ByName)`
+**Cluster**
+_Note: data can be found under cluster.data_ - `insertData`
+
+**Schema** - `validateData`
+
+**Others** - `newItem` - creates new item for the Schema - `SchemaTypes` - list of allowed Types for a schema Items
+
+## 🍰 Contributors
+
+- **Kubiczeek** - _Everything (Frontend, Backend, and UI)_ - [Kubiczeek](https://github.com/Kubiczeek)
