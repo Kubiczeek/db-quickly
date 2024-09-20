@@ -1,6 +1,6 @@
 {
   "name": "db-quickly",
-  "version": "1.0.1a",
+  "version": "1.0.2",
   "description": "Want to have some quickly accessible database for javascript? This is it!",
   "main": "dist/index.js",
   "type": "module",
