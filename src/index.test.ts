@@ -145,6 +145,15 @@ describe("Database Methods", () => {
     expect(updatedClusters.length).toBe(1);
     expect(updatedClusters[0]).toBe(updatedCluster);
   });
+
+  it("should get a cluster by name and add data to it", () => {
+    database.addCluster(cluster);
+    const foundCluster = database.getClusterByName(cluster.name);
+    const data = "Data 1";
+    foundCluster?.insertData(data);
+    expect(foundCluster?.data.length).toBe(1);
+    expect(foundCluster?.data[0]).toBe(data);
+  });
 });
 
 describe("Cluster", () => {

@@ -7,8 +7,8 @@ export class Cluster implements ICluster {
   name: string;
   description: string;
   data: Array<unknown>;
-  constructor(name: string, description: string) {
-    this._id = generateId();
+  constructor(name: string | number | boolean, description: string | number | boolean, id: string = generateId()) {
+    this._id = id;
     this.name = name.toString();
     this.description = description.toString();
     this.data = [];
@@ -191,7 +191,7 @@ export class Database implements IDatabase {
     this.clusters = [];
     if (!loadJSON(this.path.concat(this.FILE_NAME)) || override) {
       saveJSON(this.path.concat(this.FILE_NAME), this);
-      return this;
+      return this as Database;
     }
   }
 
@@ -241,7 +241,12 @@ export class Database implements IDatabase {
    */
   getClusterByName(name: string): Cluster | undefined {
     const db: Database = loadJSON(this.path.concat(this.FILE_NAME)) as Database;
-    return db.clusters.find((cluster: Cluster) => cluster.name === name);
+    const clusters = db.clusters.map(
+        (cluster: Cluster) => new Cluster(cluster.name, cluster.description, cluster._id)
+    );
+    const cluster = clusters.find((cluster: Cluster) => cluster.name === name);
+    console.log(cluster?.constructor.name);
+    return cluster;
   }
 
   /**
